@@ -23,6 +23,7 @@ from gi.repository import Gtk, Adw, GdkPixbuf, GLib, Gio, GObject
 
 from .catgirl import CatgirlDownloaderAPI
 from .waifu import WaifuDownloaderAPI
+from .serika import SerikaBooruDownloaderAPI
 from .preferences import UserPreferences
 
 
@@ -97,6 +98,12 @@ class CatgirldownloaderWindow(Adw.ApplicationWindow):
             "description": "Generate images from waifu.im.",
             "class": WaifuDownloaderAPI,
             "icon": "moe.nyarchlinux.waifudownloader"
+        },
+        "serika": {
+            "name": "Serika Booru",
+            "description": "Generate images from Serika Booru (requires an API key).",
+            "class": SerikaBooruDownloaderAPI,
+            "icon": None
         }
     }
 
@@ -237,7 +244,14 @@ class CatgirldownloaderWindow(Adw.ApplicationWindow):
         
         if hasattr(settings_btn, "_handler_id"):
              settings_btn.disconnect(settings_btn._handler_id)
-        
+
+        has_settings = bool(getattr(item.api, "has_settings", False))
+        settings_btn.set_visible(has_settings)
+        settings_btn.set_sensitive(has_settings)
+
+        if not has_settings:
+            return
+
         def on_settings_clicked(btn):
             item.api.open_settings_window(btn)
             

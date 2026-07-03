@@ -2,6 +2,7 @@ from gi.repository import Gtk, Adw
 from .preferences import UserPreferences
 from .types import NSFWOption
 
+
 @Gtk.Template(resource_path='/moe/nyarchlinux/catgirldownloader/../data/ui/preferences.ui')
 class PreferencesWindow(Adw.PreferencesWindow):
     __gtype_name__ = 'PreferencesWindow'
@@ -15,7 +16,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
         self.settings = UserPreferences()
 
         self._nsfw_options = [option.value for option in NSFWOption]
-
         model = Gtk.StringList.new(self._nsfw_options)
         self.nsfw_dropdown.set_model(model)
 
@@ -25,7 +25,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
         except ValueError:
             index = 0
         self.nsfw_dropdown.set_selected(index)
-
         self.nsfw_dropdown.connect("notify::selected", self.on_nsfw_change)
 
         seconds = self.settings.get_preference("auto_reload_interval")
@@ -52,4 +51,3 @@ class PreferencesWindow(Adw.PreferencesWindow):
         self.settings.set_preference("auto_reload_interval", seconds)
         if self.window is not None and hasattr(self.window, "set_auto_reload_interval"):
             self.window.set_auto_reload_interval(seconds)
-

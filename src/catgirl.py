@@ -1,3 +1,22 @@
+# catgirl.py
+#
+# Copyright 2026 SilverOS
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import requests
 import json
 from typing import Optional
@@ -5,9 +24,10 @@ from typing import Optional
 from .types import NSFWOption
 from .api_base import BaseDownloaderAPI
 
+
 class CatgirlDownloaderAPI(BaseDownloaderAPI):
     def __init__(self, settings=None) -> None:
-        super().__init__()
+        super().__init__(settings=settings, source_id="catgirl")
         self.endpoint = "https://nekos.moe/api/v1/random/image"
 
     def get_random_image_id(self, nsfw_mode: NSFWOption = NSFWOption.BLOCK_NSFW) -> Optional[str]:
@@ -25,7 +45,7 @@ class CatgirlDownloaderAPI(BaseDownloaderAPI):
         except Exception as e:
             print(e)
             return None
-        
+
         try:
             data = json.loads(r.text)
             self.info = data
@@ -68,7 +88,6 @@ class CatgirlDownloaderAPI(BaseDownloaderAPI):
             except Exception:
                 import time
                 image_id = str(int(time.time()))
-                
         if extension:
             return f"nekos.moe_{image_id}.{extension}"
         return f"nekos.moe_{image_id}"

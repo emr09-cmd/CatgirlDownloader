@@ -60,10 +60,10 @@ class CatgirldownloaderApplication(Adw.Application):
         about = Adw.AboutWindow(transient_for=self.props.active_window,
                                 application_name='Catgirl Downloader',
                                 application_icon='moe.nyarchlinux.catgirldownloader',
-                                developer_name='Nyarch Linux developers team',
-                                version='0.5',
-                                developers=['SilverOS'],
-                                copyright='© 2026 SilverOS')
+                                developer_name='emr09',
+                                version='0.0.2',
+                                developers=['SilverOS', 'emr09'],
+                                copyright='© 2026 emr09')
         about.present()
 
     def on_art_about_action(self, widget, _):

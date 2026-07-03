@@ -33,6 +33,7 @@ catgirldownloader_sources = [
   'preferences.py',
   'preferenceswindow.py',
   'waifu.py',
+  'serika.py',
   'types.py',
   'api_base.py',
 ]

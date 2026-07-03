@@ -1,12 +1,39 @@
+# api_base.py
+#
+# Copyright 2026 SilverOS
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 import requests
 from .types import NSFWOption
 
+
 class BaseDownloaderAPI(ABC):
-    def __init__(self) -> None:
+    #: Set to True in a subclass to have the gear icon next to this
+    #: source in the picker be visible and clickable. Sources that
+    #: don't override this stay False, so the icon is hidden for them.
+    has_settings: bool = False
+
+    def __init__(self, settings: Any = None, source_id: Optional[str] = None) -> None:
         self.endpoint: str = ""
         self.info: Optional[dict[str, Any]] = None
+        self.settings = settings
+        self.source_id = source_id
 
     @abstractmethod
     def get_image_url(self, nsfw_mode: NSFWOption = NSFWOption.BLOCK_NSFW) -> Optional[str]:
@@ -37,22 +64,35 @@ class BaseDownloaderAPI(ABC):
     def get_filename_suggestion(self, extension: Optional[str], info: Optional[dict] = None) -> str:
         pass
 
+    # --- API key handling -----------------------------------------------------
+
+    @property
+    def api_key_pref_name(self) -> str:
+        """Preference key used to store this source's API key."""
+        return f"{self.source_id or self.__class__.__name__}_api_key"
+
+    def get_api_key(self) -> Optional[str]:
+        """Return the saved API key for this source, or None if unset/no settings."""
+        if not self.settings:
+            return None
+        key = self.settings.get_preference(self.api_key_pref_name)
+        return key or None
+
+    def set_api_key(self, value: Optional[str]) -> None:
+        """Persist the API key for this source."""
+        if not self.settings:
+            return
+        self.settings.set_preference(self.api_key_pref_name, value or "")
+
+    # --- Settings popover -------------------------------------------------------
+
     def open_settings_window(self, parent: Any) -> None:
         """
-        Opens a settings window for this downloader source.
-        Override this method if the source has configurable settings.
-        """
-        # Default implementation opens the main application preferences
-        # Avoid circular import by importing inside the method
-        from gi.repository import Gio
-        action = Gio.SimpleAction.new("preferences", None)
-        action.activate(None)
-        # Alternatively, since we can't easily trigger the app action from here without the app instance context cleanly,
-        # we can check if parent has the action or trigger it via the application.
-        
-        # A safer way if 'parent' is the window is to use the action group:
-        if hasattr(parent, "get_application"):
-            app = parent.get_application()
-            if app:
-                app.activate_action("preferences", None)
+        Called when the gear icon next to this source is clicked.
 
+        No-op by default — most sources have nothing to configure, and
+        the gear icon is hidden for them anyway (see `has_settings`).
+        Subclasses that need a settings UI (e.g. an API key field)
+        should set `has_settings = True` and override this method.
+        """
+        pass
