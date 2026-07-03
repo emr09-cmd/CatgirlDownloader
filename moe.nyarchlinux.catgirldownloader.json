@@ -1,5 +1,5 @@
 {
-    "app-id" : "moe.nyarchlinux.catgirldownloader",
+    "app-id" : "com.emr09.catgirldownloader",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "50",
     "sdk" : "org.gnome.Sdk",
