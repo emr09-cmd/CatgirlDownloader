@@ -23,7 +23,6 @@ from gi.repository import Gtk, Adw, GdkPixbuf, GLib, Gio, GObject
 
 from .catgirl import CatgirlDownloaderAPI
 from .waifu import WaifuDownloaderAPI
-from .danbooru import DanbooruDownloaderAPI
 from .preferences import UserPreferences
 
 
@@ -98,12 +97,6 @@ class CatgirldownloaderWindow(Adw.ApplicationWindow):
             "description": "Generate images from waifu.im.",
             "class": WaifuDownloaderAPI,
             "icon": "moe.nyarchlinux.waifudownloader"
-        },
-        "danbooru": {
-            "name": "Danbooru",
-            "description": "Generate images from danbooru.donmai.us with custom tags.",
-            "class": DanbooruDownloaderAPI,
-            "icon": "danbooru"
         }
     }
 
